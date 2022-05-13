@@ -1,0 +1,97 @@
+{
+	"info": {
+		"_postman_id": "440f09f1-e439-4d8c-9a3e-40f1e4d1b568",
+		"name": "Bookstore Practice",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "Register User",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"name\" : \"{{$randomFullName}}\",\n    \"email\" : \"{{$randomExampleEmail}}\",\n    \"phone\" : \"{{$randomPhoneNumber}}\",\n    \"password\" : \"password123\"\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{api-url}}/register",
+					"host": [
+						"{{api-url}}"
+					],
+					"path": [
+						"register"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Login User",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"email\" : \"mamang@mailinator.com\",\n    \"password\" : \"password123\"\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{api-url}}/login",
+					"host": [
+						"{{api-url}}"
+					],
+					"path": [
+						"login"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Create New Book",
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyX2lkIjoxfQ.LOTOYQcs92Rdl3SxoNBS5VlHcaFMhEHqQfdYfYa6pqY",
+							"type": "string"
+						}
+					]
+				},
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"title\" : \"{{$randomLoremSentence}}\",\n    \"author\" : \"{{$randomFullName}}\",\n    \"description\" : \"{{$randomLoremSentences}}\"\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{api-url}}/new-book",
+					"host": [
+						"{{api-url}}"
+					],
+					"path": [
+						"new-book"
+					]
+				}
+			},
+			"response": []
+		}
+	]
+}
