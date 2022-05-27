@@ -19,7 +19,7 @@ type MongoInstance struct {
 var mon MongoInstance
 
 const dbName = "hrms-fiber"
-const mongoURI = "mongodb://localhost:27017/" + dbName
+const mongoURI = "mongodb://developer:developer123@localhost:27017/" + dbName + "?ssl=false&authMechanism=SCRAM-SHA-256&authSource=admin"
 
 type Employee struct {
 	ID       string  `json:"id,omitempty" bson:"_id,omitempty"`
@@ -75,22 +75,21 @@ func main() {
 	app.Post("/employee", func(ctx *fiber.Ctx) error {
 		collection := mon.Db.Collection("employees")
 
-		var employee Employee
+		employee := new(Employee)
 
 		if err := ctx.BodyParser(employee); err != nil {
-			return ctx.Status(404).SendString(err.Error())
+			return ctx.Status(500).SendString(err.Error())
 		}
 
 		employee.ID = ""
 
 		result, err := collection.InsertOne(ctx.Context(), employee)
-
 		if err != nil {
 			return ctx.Status(500).SendString(err.Error())
 		}
 
 		filter := bson.D{{Key: "_id", Value: result.InsertedID}}
-		record, err := collection.Find(ctx.Context(), &filter)
+		record := collection.FindOne(ctx.Context(), &filter)
 
 		createdRecord := &Employee{}
 		if err := record.Decode(createdRecord); err != nil {
@@ -110,7 +109,7 @@ func main() {
 			return ctx.Status(400).SendString(err.Error())
 		}
 
-		var employee Employee
+		employee := new(Employee)
 
 		if err := ctx.BodyParser(employee); err != nil {
 			return ctx.Status(400).SendString(err.Error())
@@ -137,7 +136,7 @@ func main() {
 	})
 
 	app.Delete("/employee/:id", func(ctx *fiber.Ctx) error {
-		collection := mon.Db.Collection("employee")
+		collection := mon.Db.Collection("employees")
 
 		employeeId, err := primitive.ObjectIDFromHex(ctx.Params("id"))
 
@@ -157,7 +156,7 @@ func main() {
 			return ctx.SendStatus(404)
 		}
 
-		return ctx.Status(200).JSON("record deleted")
+		return ctx.Status(200).SendString("record deleted")
 	})
 
 	log.Fatal(app.Listen(":8080"))
